@@ -2,7 +2,7 @@
 
 class MusicLibrary {
 
-	CONST BOOKCASE  = "./Library.json";
+	CONST musicCASE  = "./Library.json";
 	CONST DEPTH	= 1024;
 	CONST MAXWEIGHT = 10000;
 	CONST PWD 	= "Password to encrypt"; // optional.
@@ -23,12 +23,12 @@ class MusicLibrary {
 	}
 	/**
 	* Encodes JSON object
-	* @param book
+	* @param music
 	* @return void
 	*/
-	public function encode($book) 
+	public function encode($music) 
 	{
-		return json_encode($book, JSON_PRETTY_PRINT);
+		return json_encode($music, JSON_PRETTY_PRINT);
 	}
 	/**
 	* Loads and decodes JSON object
@@ -36,45 +36,45 @@ class MusicLibrary {
 	*/
 	public function decode() 
 	{
-		return json_decode(file_get_contents(self::BOOKCASE), true, self::DEPTH, JSON_BIGINT_AS_STRING);
+		return json_decode(file_get_contents(self::musicCASE), true, self::DEPTH, JSON_BIGINT_AS_STRING);
 	}
 	
-	public function addBook() 
+	public function addmusic() 
 	{
-		$newbook = 
+		$newmusic = 
 			array(
-			"title" => "{$this->titlebook}", 
-			"isbn" => "{$this->isbnbook}",
-			"weight" => "{$this->weightbook}",
-			"description" => "{$this->introbook}"
+			"title" => "{$this->titlemusic}", 
+			"isbn" => "{$this->isbnmusic}",
+			"weight" => "{$this->weightmusic}",
+			"description" => "{$this->intromusic}"
 		);
 		$lijst = $this->decode();
 		$i = count($lijst);
 		if($i >=1) {
 			usort($lijst, $this->sortISBN('isbn'));
-			array_push($lijst,$newbook);
+			array_push($lijst,$newmusic);
 			} else {
-			$lijst = array($newbook);
+			$lijst = array($newmusic);
 		}
-		$this->storeBook($lijst);
+		$this->storemusic($lijst);
 	}
 
-	public function editBook($id) 
+	public function editmusic($id) 
 	{
 		// todo! 
 	}
 
 	public function checkForm() 
 	{
-		isset($_POST['title']) ? 		$this->titlebook = $this->cleanInput($_POST['title']) : $titlebook = false;
-		isset($_POST['isbn']) ? 		$this->isbnbook = $this->cleanInput($_POST['isbn']) : $isbnbook = false;
-		isset($_POST['weight']) ? 		$this->weightbook = $this->cleanInput($_POST['weight']) : $weightbook = false;
-		isset($_POST['description']) ?  $this->introbook = $this->cleanInput($_POST['description']) : $introbook = false;
+		isset($_POST['title']) ? 		$this->titlemusic = $this->cleanInput($_POST['title']) : $titlemusic = false;
+		isset($_POST['isbn']) ? 		$this->isbnmusic = $this->cleanInput($_POST['isbn']) : $isbnmusic = false;
+		isset($_POST['weight']) ? 		$this->weightmusic = $this->cleanInput($_POST['weight']) : $weightmusic = false;
+		isset($_POST['description']) ?  $this->intromusic = $this->cleanInput($_POST['description']) : $intromusic = false;
 
 		$_SESSION['messages'] = array();
 
-		if($this->titlebook != false) {
-			if(strlen($this->titlebook) > 60 ) {
+		if($this->titlemusic != false) {
+			if(strlen($this->titlemusic) > 60 ) {
 				$this->message('Title may not be longer than 60 characters.');
 				return false;
 			}
@@ -83,9 +83,9 @@ class MusicLibrary {
 				return false;
 		}
 
-		if($this->isbnbook != false) {
-			if(!preg_match("/[a-zA-Z]/i",$this->isbnbook)) {  
-				if(strlen($this->isbnbook) > 13 || strlen($this->isbnbook) < 13) { 
+		if($this->isbnmusic != false) {
+			if(!preg_match("/[a-zA-Z]/i",$this->isbnmusic)) {  
+				if(strlen($this->isbnmusic) > 13 || strlen($this->isbnmusic) < 13) { 
 					$this->message('ISBN number is wrong. (13 digits.)');
 					return false;
 				}
@@ -95,8 +95,8 @@ class MusicLibrary {
 			}
 		} 
 
-		if($this->weightbook != false) {
-			if(!is_int((int)$this->weightbook) || preg_match("/[a-zA-Z]/i",$this->weightbook)) { 
+		if($this->weightmusic != false) {
+			if(!is_int((int)$this->weightmusic) || preg_match("/[a-zA-Z]/i",$this->weightmusic)) { 
 				$this->message('Weight may not contain characters.');
 				return false;
 			}
@@ -105,8 +105,8 @@ class MusicLibrary {
 				return false;
 		}
 
-		if($this->introbook != false) {
-			if(strlen($this->introbook) > 60 ) {
+		if($this->intromusic != false) {
+			if(strlen($this->intromusic) > 60 ) {
 				$this->message('Description may not be longer than 60 characters.');
 				return false;
 			}
@@ -115,11 +115,6 @@ class MusicLibrary {
 				return false;
 		}
 
-	}
-
-	public function tooHeavy($weight) 
-	{
-		return ($weight > self::MAXWEIGHT) ? true:false;
 	}
 
 	public function message($value) 
@@ -144,36 +139,36 @@ class MusicLibrary {
 	} 
 
 	/**
-	* Store book into BookLibrary
-	* @param array $book
+	* Store music into musicLibrary
+	* @param array $music
 	* @return boolean, true for success, false for failure.
 	*/
-	public function storeBook($book) 
+	public function storemusic($music) 
 	{
 		// make a backup before doing anything.
-		$file 	= self::BOOKCASE;
-		$copy 	= self::BOOKCASE.'.bak';
+		$file 	= self::musicCASE;
+		$copy 	= self::musicCASE.'.bak';
 		@copy($file, $copy);
 		// convert encoding
-		$json = mb_convert_encoding($this->encode($book), self::FILE_ENC, self::FILE_OS);
+		$json = mb_convert_encoding($this->encode($music), self::FILE_ENC, self::FILE_OS);
 		// write file.
-		file_put_contents(self::BOOKCASE,$json, LOCK_EX);
+		file_put_contents(self::musicCASE,$json, LOCK_EX);
 	}
 	
-	public function deleteBook($book) 
+	public function deletemusic($music) 
 	{
 		$lijst = $this->decode();
 		if($lijst !== null) {
 			$libraylist = usort($lijst, $this->sortISBN('isbn'));
-			$books = array();
+			$musics = array();
 			foreach($lijst as $c) {	
-				echo $book."<br>";
-				if($c['isbn'] != $book) {
-					array_push($books,$c);
+				echo $music."<br>";
+				if($c['isbn'] != $music) {
+					array_push($musics,$c);
 				}
 			}
 		}
-		$this->storeBook($books);
+		$this->storemusic($musics);
 	}
 
 	public function sortISBN($key) {
