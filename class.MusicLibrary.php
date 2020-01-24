@@ -2,7 +2,7 @@
 
 class MusicLibrary {
 
-	CONST musicCASE  = "./Library.json";
+	CONST MUSICLIBRARY  = "./Library.json";
 	CONST DEPTH	= 1024;
 	CONST MAXWEIGHT = 10000;
 	CONST PWD 	= "Password to encrypt"; // optional.
@@ -36,26 +36,35 @@ class MusicLibrary {
 	*/
 	public function decode() 
 	{
-		return json_decode(file_get_contents(self::musicCASE), true, self::DEPTH, JSON_BIGINT_AS_STRING);
+		return json_decode(file_get_contents(self::MUSICLIBRARY), true, self::DEPTH, JSON_BIGINT_AS_STRING);
 	}
 	
 	public function addmusic() 
 	{
 		$newmusic = 
 			array(
-			"title" => "{$this->titlemusic}", 
-			"isbn" => "{$this->isbnmusic}",
-			"weight" => "{$this->weightmusic}",
-			"description" => "{$this->intromusic}"
+			  "listing_id" => "{$this->listing_id}",
+			  "artist" => "{$this->artist}",
+			  "title" => "{$this->title}",
+			  "label" => "{$this->label}",
+			  "catno" => "{$this->catno}",
+			  "format" => "{$this->format}",
+			  "release_id" => "{$this->release_id}",
+			  "status" => "{$this->status}",
+			  "price" => "{$this->price}",
+			  "listed" => "{$this->listed}",
+			  "media_condition" => "{$this->media_condition}",
+			  "sleeve_condition" => "{$this->sleeve_condition}",
+			  "accept_offer" => "{$this->accept_offer}",
+			  "weight" => "{$this->weight}",
+			  "format_quantity" => "{$this->format_quantity}",
+			  "flat_shipping" => "{$this->flat_shipping}"
 		);
+		
 		$lijst = $this->decode();
 		$i = count($lijst);
-		if($i >=1) {
-			usort($lijst, $this->sortISBN('isbn'));
-			array_push($lijst,$newmusic);
-			} else {
-			$lijst = array($newmusic);
-		}
+		$lijst = array($newmusic);
+
 		$this->storemusic($lijst);
 	}
 
@@ -66,15 +75,29 @@ class MusicLibrary {
 
 	public function checkForm() 
 	{
-		isset($_POST['title']) ? 		$this->titlemusic = $this->cleanInput($_POST['title']) : $titlemusic = false;
-		isset($_POST['isbn']) ? 		$this->isbnmusic = $this->cleanInput($_POST['isbn']) : $isbnmusic = false;
-		isset($_POST['weight']) ? 		$this->weightmusic = $this->cleanInput($_POST['weight']) : $weightmusic = false;
-		isset($_POST['description']) ?  $this->intromusic = $this->cleanInput($_POST['description']) : $intromusic = false;
+	
+      isset($_POST['listing_id']) ? 		$this->listing_id = $this->cleanInput($_POST['listing_id']) : $listing_id = false;
+      isset($_POST['artist']) ? 		$this->artist = $this->cleanInput($_POST['artist']) : $artist = false;
+      isset($_POST['title']) ? 		$this->title = $this->cleanInput($_POST['title']) : $title = false;
+      isset($_POST['label']) ? 		$this->label = $this->cleanInput($_POST['label']) : $label = false;
+      isset($_POST['catno']) ? 		$this->catno = $this->cleanInput($_POST['catno']) : $catno = false;
+      isset($_POST['format']) ? 		$this->format = $this->cleanInput($_POST['format']) : $format = false;
+      isset($_POST['release_id']) ? 		$this->release_id = $this->cleanInput($_POST['release_id']) : $release_id = false;
+      isset($_POST['status']) ? 		$this->status = $this->cleanInput($_POST['status']) : $status = false;
+      isset($_POST['price']) ? 		$this->price = $this->cleanInput($_POST['price']) : $price = false;
+      isset($_POST['listed']) ? 		$this->listed = $this->cleanInput($_POST['listed']) : $listed= false;
+      isset($_POST['media_condition']) ? 		$this->media_condition = $this->cleanInput($_POST['media_condition']) : $media_condition = false;
+      isset($_POST['sleeve_condition']) ? 		$this->sleeve_condition = $this->cleanInput($_POST['sleeve_condition']) : $sleeve_condition = false;
+      isset($_POST['accept_offer']) ? 		$this->accept_offer = $this->cleanInput($_POST['accept_offer']) : $accept_offer = false;
+      isset($_POST['weight']) ? 		$this->weight = $this->cleanInput($_POST['weight']) : $weight = false;
+      isset($_POST['format_quantity']) ? 		$this->format_quantity = $this->cleanInput($_POST['format_quantity']) : $format_quantity = false;
+      isset($_POST['flat_shipping']) ? 		$this->flat_shipping = $this->cleanInput($_POST['flat_shipping']) : $flat_shipping = false;
+	  
 
 		$_SESSION['messages'] = array();
 
-		if($this->titlemusic != false) {
-			if(strlen($this->titlemusic) > 60 ) {
+		if($this->title != false) {
+			if(strlen($this->title) > 60 ) {
 				$this->message('Title may not be longer than 60 characters.');
 				return false;
 			}
@@ -83,20 +106,8 @@ class MusicLibrary {
 				return false;
 		}
 
-		if($this->isbnmusic != false) {
-			if(!preg_match("/[a-zA-Z]/i",$this->isbnmusic)) {  
-				if(strlen($this->isbnmusic) > 13 || strlen($this->isbnmusic) < 13) { 
-					$this->message('ISBN number is wrong. (13 digits.)');
-					return false;
-				}
-			} else {
-					$this->message('ISBN number may only contain numbers!');
-					return false;
-			}
-		} 
-
-		if($this->weightmusic != false) {
-			if(!is_int((int)$this->weightmusic) || preg_match("/[a-zA-Z]/i",$this->weightmusic)) { 
+		if($this->weight != false) {
+			if(!is_int((int)$this->weight) || preg_match("/[a-zA-Z]/i",$this->weight)) { 
 				$this->message('Weight may not contain characters.');
 				return false;
 			}
@@ -105,13 +116,13 @@ class MusicLibrary {
 				return false;
 		}
 
-		if($this->intromusic != false) {
-			if(strlen($this->intromusic) > 60 ) {
-				$this->message('Description may not be longer than 60 characters.');
+		if($this->artist != false) {
+			if(strlen($this->artist) > 60 ) {
+				$this->message('Artist may not be longer than 60 characters.');
 				return false;
 			}
 		}  else {
-				$this->message('Description magy not be empty.');
+				$this->message('Description may not be empty.');
 				return false;
 		}
 
@@ -146,13 +157,13 @@ class MusicLibrary {
 	public function storemusic($music) 
 	{
 		// make a backup before doing anything.
-		$file 	= self::musicCASE;
-		$copy 	= self::musicCASE.'.bak';
+		$file 	= self::MUSICLIBRARY;
+		$copy 	= self::MUSICLIBRARY.'.bak';
 		@copy($file, $copy);
 		// convert encoding
 		$json = mb_convert_encoding($this->encode($music), self::FILE_ENC, self::FILE_OS);
 		// write file.
-		file_put_contents(self::musicCASE,$json, LOCK_EX);
+		file_put_contents(self::MUSICLIBRARY,$json, LOCK_EX);
 	}
 	
 	public function deletemusic($music) 
