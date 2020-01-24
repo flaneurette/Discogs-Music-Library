@@ -23,18 +23,18 @@
 			<?php 
 			
 				$thelibrary  = new MusicLibrary();
+				
 				$lijst = $thelibrary->decode();
 
 				if($lijst !== null) {
 
 					$libraylist = usort($lijst, $thelibrary->sortISBN('isbn'));
-					$books = array();
-					$heavybooks = array();
-					$weightplank = 0;
+					
+					$music = array();
 					
 					$i = 0;
 						foreach($lijst as $c) {	
-							array_push($books,$c);
+							array_push($music,$c);
 							$thelibrary->cleanInput($c['title']);
 							$i++;
 						}
@@ -43,16 +43,16 @@
 					
 					echo '<tr><td width="90">Status</td><td>Title</td><td>Artist</td><td>Format</td><td>Price</td></tr>';
 					
-					$i = count($books)-1;
+					$i = count($music)-1;
 					
 					if($i >= 0) { 
 						while($i >= 0) {
-							if($books[$i]['status'] == 'Sold') {
+							if($music[$i]['status'] == 'Sold') {
 								$status_color = 'status-red';
 								} else {
 								$status_color = 'status-green';
 							}
-							echo "<tr><td width=\"90\"><div class=".$status_color.">".$books[$i]['status']."</div></td><td><a href=\"\">".$thelibrary->cleanInput($books[$i]['title']).' </a> </td><td> '.$books[$i]['artist']."</td><td>".$books[$i]['format']."</td><td>".$books[$i]['price']."</td></tr>";
+							echo "<tr><td width=\"90\"><div class=".$status_color.">".$music[$i]['status']."</div></td><td><a href=\"\">".$thelibrary->cleanInput($music[$i]['title']).' </a> </td><td> '.$music[$i]['artist']."</td><td>".$music[$i]['format']."</td><td>".$music[$i]['price']."</td></tr>";
 						$i--;
 						}
 					}
